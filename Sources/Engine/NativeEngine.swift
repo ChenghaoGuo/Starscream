@@ -50,6 +50,12 @@ public class NativeEngine: NSObject, Engine, URLSessionDataDelegate, URLSessionW
             write(string: text, completion: completion)
         case .ping:
             task?.sendPing(pongReceiveHandler: { (error) in
+                guard let self = self else { return }
+                if let err = error {
+                  self.broadcast(event: .error(err))
+                } else {
+                  self.broadcast(event: .pong(nil))
+                }
                 completion?()
             })
         default:
